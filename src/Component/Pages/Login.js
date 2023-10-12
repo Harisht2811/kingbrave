@@ -4,11 +4,11 @@ import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import ClipLoader from "react-spinners/ClipLoader";
 import { useUserAuth } from '../../Firebase/UserAuth';
-
+import { useNavigate } from 'react-router-dom';
+import { auth } from '../../Firebase/FirebaseConfig';
 
 export const Login = () => {
 
-  const { setRecaptcha } = useUserAuth();
   const [phonenumber, setPhoneNumber] = useState();
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [activeIndex, setActiveIndex] = useState(0);
@@ -18,10 +18,14 @@ export const Login = () => {
   const [timer, setTimer] = useState(30);
   const [confirmObj, setConfirmObj] = useState("");
   const inputRef = useRef();
+  const { setRecaptcha } = useUserAuth();
+  const { user } = useUserAuth();
+  const navigate = useNavigate();
   let valueOTP;
   let currentOTPIndex = 0
 
   useEffect(() => {
+    // console.log(auth)
     inputRef.current?.focus()
     if (timer == 0) setIsResend(true)
     let countsSeconds = setInterval(() => {
@@ -79,17 +83,18 @@ export const Login = () => {
     if (valueOTP == '' || valueOTP == null)
       toast.error('Enter the OTP');
     try {
-
       await confirmObj.confirm(parseInt(valueOTP.join('')))
       toast.success('user logged in')
+      navigate("/home")
     }
     catch (err) {
+      toast.error('Invalid OTP')
       console.log(err)
     }
 
   }
 
-  const resendOTP = async() => {
+  const resendOTP = async () => {
     // getOtp();
     setIsResend(false)
     setTimer(30)
@@ -101,7 +106,7 @@ export const Login = () => {
     // catch(err){
     //     console.log(err);
     // }
-        
+
   }
 
 
@@ -166,7 +171,7 @@ export const Login = () => {
                     className='mt-[10%] text-blue-500 ml-[2%] cursor-pointer w-[45%]'
                     onClick={resendOTP}
                   >
-                    {isResend ? 'Resend the code' :
+                    {isResend ? 'Resend OT' :
                       <span className='text-[18px] text-blue-500 ml-[15%] mt-[2%]'>00:{timer < 10 ? '0' + timer : timer}</span>
                     }</div>
                   <button

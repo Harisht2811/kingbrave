@@ -1,9 +1,10 @@
 import React from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { Login } from './Component/Pages/Login';
 import { UserAuthContextProvider } from './Firebase/UserAuth';
 
+import { Login } from './Component/Pages/Login';
+import Mainpage from './Component/Layout/Mainpage';
 
 
 function App() {
@@ -14,11 +15,10 @@ function App() {
         <div><Toaster /></div>
         <Routes>
           <Route exact path='/' element={<Login />}></Route>
+          <Route exact path='/:screens' element={<Mainpage />}></Route>
         </Routes>
       </UserAuthContextProvider>
     </BrowserRouter>
-
-
   )
 }
 
